@@ -2,7 +2,7 @@
   <ion-footer>
     <ion-toolbar>
       <ion-buttons slot="start">
-        <ion-button :disabled="currentPage <= 1" @click="changePage(currentPage - 1)" class="previous-button">
+        <ion-button :disabled="currentPage <= 1" @click="changePage(currentPage - 1)" class="previous-button" aria-label="Página anterior">
           Anterior
         </ion-button>
       </ion-buttons>
@@ -15,12 +15,13 @@
           fill="clear"
           size="small"
           class="number-button"
+          aria-label="Página {{ pageNumber }}"
         >
           <span>{{ pageNumber }}</span>
         </ion-button>
       </ion-buttons>
       <ion-buttons slot="end">
-        <ion-button :disabled="currentPage >= totalPages" @click="changePage(currentPage + 1)" class="next-button">
+        <ion-button :disabled="currentPage >= totalPages" @click="changePage(currentPage + 1)" class="next-button" aria-label="Siguiente página">
           Siguiente
         </ion-button>
       </ion-buttons>
@@ -56,17 +57,10 @@ export default defineComponent({
     };
 
     const visiblePages = computed(() => {
-      const pages = [];
       const maxVisible = 5; // Ajusta este valor para mostrar más o menos botones
-      let start = Math.max(1, props.currentPage - Math.floor(maxVisible / 2));
+      const start = Math.max(1, props.currentPage - Math.floor(maxVisible / 2));
       const end = Math.min(props.totalPages, start + maxVisible - 1);
-      if (end - start < maxVisible - 1) {
-        start = Math.max(1, end - maxVisible + 1);
-      }
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
-      return pages;
+      return Array.from({ length: end - start + 1 }, (_, index) => start + index);
     });
 
     return {
